@@ -1,0 +1,127 @@
+model:
+  provider: nous
+  default: z-ai/glm-5.2
+
+toolsets:
+- hermes-cli
+
+agent:
+  max_turns: 333
+  tool_use_enforcement: auto
+  task_completion_guidance: true
+  parallel_tool_call_guidance: true
+  environment_probe: true
+  coding_context: auto
+  image_input_mode: auto
+  reasoning_effort: medium
+  verbose: false
+
+display:
+  personality: philosopher
+  skin: default
+  language: en
+  tui_status_indicator: kaomoji
+  compact: false
+  streaming: true
+  persistent_output: true
+  inline_diffs: true
+  voice_enabled: true
+
+tts:
+  provider: edge
+  edge:
+    voice: en-US-GuyNeural
+  auto_tts: true
+  use_gateway: true
+
+stt:
+  enabled: true
+  provider: openai
+  openai:
+    model: whisper-1
+  use_gateway: true
+
+voice:
+  auto_tts: true
+  beep_enabled: true
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  write_approval: false
+  flush_min_turns: 6
+
+delegation:
+  orchestrator_enabled: true
+  max_concurrent_children: 3
+  max_async_children: 3
+  max_spawn_depth: 1
+  inherit_mcp_toolsets: true
+
+context:
+  engine: compressor
+
+skills:
+  template_vars: true
+  write_approval: false
+
+curator:
+  enabled: true
+
+discord:
+  require_mention: true
+  auto_thread: true
+  thread_require_mention: false
+  history_backfill: true
+  history_backfill_limit: 50
+  reactions: true
+  allow_any_attachment: false
+  max_attachment_bytes: 33554432
+  channel_skill_bindings:
+  - id: YOUR_DM_CHANNEL_ID
+    skills:
+    - hermes-agent
+    - anser
+
+web:
+  backend: firecrawl
+  use_gateway: true
+
+browser:
+  use_gateway: true
+  cloud_provider: browser-use
+
+image_gen:
+  use_gateway: true
+
+video_gen:
+  provider: fal
+  use_gateway: true
+
+code_execution:
+  mode: project
+  max_tool_calls: 50
+  timeout: 300
+
+platform_toolsets:
+  cli:
+  - browser
+  - clarify
+  - code_execution
+  - cronjob
+  - delegation
+  - file
+  - image_gen
+  - memory
+  - messaging
+  - session_search
+  - skills
+  - terminal
+  - todo
+  - tts
+  - vision
+  - web
+  discord:
+  - hermes-discord

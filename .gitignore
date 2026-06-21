@@ -1,0 +1,10 @@
+sessions/
+memories/
+logs/
+workspace/
+plans/
+local/
+*.db
+*.pyc
+__pycache__/
+.env
