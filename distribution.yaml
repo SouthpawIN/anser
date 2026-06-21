@@ -1,12 +1,11 @@
 name: anser
 version: 0.1.0
-description: "A moderator and tech support assistant answering Hermes Agent questions in the Nous Research Discord"
+description: "Hermes Agent profile: anser"
 author: SouthpawIN
 license: MIT
 hermes_requires: ">=0.12.0"
+env_requires: []
 distribution_owned:
   - SOUL.md
   - config.yaml
   - skills/
-env_requires:
-  - OPENROUTER_API_KEY
