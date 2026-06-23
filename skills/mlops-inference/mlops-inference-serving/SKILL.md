@@ -1,14 +1,14 @@
 ---
 name: mlops-inference-serving
-description: "ML model inference and serving: local GGUF (llama.cpp), multimodal model composition (Qwen-family), and high-throughput serving (vLLM)."
+description: "ML model inference and serving: local GGUF (llama.cpp) and high-throughput serving (vLLM)."
 version: 1.0.0
 author: Hermes Agent
 license: MIT
-tags: ["mlops", "inference", "serving", "llama.cpp", "gguf", "vllm", "multimodal", "qwen", "model-composition"]
+tags: ["mlops", "inference", "serving", "llama.cpp", "gguf", "vllm"]
 platforms: [linux, macos, windows]
 metadata:
   hermes:
-    tags: [mlops, inference, serving, llama.cpp, gguf, vllm, multimodal, qwen, model-composition]
+    tags: [mlops, inference, serving, llama.cpp, gguf, vllm]
     category: mlops-inference
     related_skills: [mlops-training-finetuning, mlops-model-registry-tracking]
 ---
@@ -18,13 +18,11 @@ metadata:
 Unified skill for running and serving ML models locally and in production. Covers three complementary approaches:
 
 1. **Local GGUF Inference** (`llama-cpp`): llama.cpp for CPU/Apple Silicon/CUDA/ROCm/Intel GPU inference with Hugging Face Hub model discovery
-2. **Multimodal Model Composition** (`multimodal-model-composition`): Build custom multimodal models by composing Qwen-family components (Darwin evolution, Thinker-Talker, MTP draft heads, expert grafting)
-3. **High-Throughput Serving** (`vllm`): vLLM for OpenAI-compatible API serving with PagedAttention, quantization, and multi-model deployment
+2. **High-Throughput Serving** (`vllm`): vLLM for OpenAI-compatible API serving with PagedAttention, quantization, and multi-model deployment
 
 Load this skill when the user wants to:
 - Run local LLMs on consumer hardware (llama.cpp)
 - Find and download GGUF models from Hugging Face Hub
-- Compose custom multimodal models from Qwen components
 - Deploy high-throughput inference servers (vLLM)
 - Optimize inference for latency, throughput, or memory
 
@@ -221,177 +219,6 @@ Source URLs:
 
 ---
 
-## Multimodal Model Composition
-
-> **Source:** Absorbed from `multimodal-model-composition` skill. Compose multimodal AI models from Qwen-family components: Darwin evolution, Thinker-Talker, MTP draft heads, expert grafting.
-
-### When to Use
-- Building a multimodal model from multiple Qwen-family checkpoints
-- Need real-time audio I/O (Thinker-Talker architecture)
-- Want training-free model merging (Darwin Family approach)
-- Integrating specialist experts (vision gen, video gen, audio gen) into MoE base
-- Optimizing inference with multi-token prediction (MTP)
-
-### Core Principles
-
-#### 1. Frankenstein Architecture
-Take the BEST component from each Qwen-family model:
-- **Qwen 3.6 35A3B** — Frontier reasoning backbone (text + vision understanding)
-- **Qwen2.5-Omni** — Real-time audio I/O (Omni Encoder + Talker)
-- **Lance 3B / Lance Video 3B** — Vision/video generation specialists
-- **AceStep 4B** — Audio/music generation specialist
-
-All share Qwen base = direct weight compatibility, same tokenizer, same FFN structure.
-
-#### 2. Modular Specialists (3-4B Each)
-Keep specialists at 3-4B for uniform integration:
-- Lance Image 3B (vision gen/edit)
-- Lance Video 3B (video gen)
-- AceStep 4B (audio gen)
-- Omni Encoder 3B (audio input)
-- Omni Talker 0.5B (audio output)
-
-**Routing:** Base perceives + reasons → activates specialist only when generation needed.
-
-| User Intent | Active Components | ~Active Params |
-|-------------|-------------------|----------------|
-| "What's in this image?" | 3.6 backbone + VL encoder | ~33A |
-| "Generate an image of..." | 3.6 backbone + **Lance Image** | ~36A |
-| "Talk to me" | 3.6 backbone + **Omni Talker** | ~34A |
-
-#### 3. Darwin Evolution (Training-Free Merging)
-Use **Darwin Family: MRI-Trust-Weighted Evolutionary Merging** (arXiv:2605.14386):
-
-**Three innovations:**
-1. 14-dimensional adaptive merge genome (component/block-level recombination)
-2. MRI-Trust fusion (diagnostic layer importance + evolutionary search)
-3. Architecture mapper (cross-architecture breeding: Transformer + Mamba, etc.)
-
-**Workflow:**
-```python
-# Phase 1: Genome design
-genome = {
-    "text_attention": (qwen_35a3b, layers=[0,15]),
-    "vision_encoder": (lance_image_3b, components=["vision_tower", "projector"]),
-    "temporal_attention": (lance_video_3b, layers=[8,20]),
-    "audio_ffn": (acestep_4b, components=["audio_experts"]),
-    "multimodal_fusion": (hybrid, layers=[20,30], strategy="mri_trust_fusion")
-}
-
-# Phase 2: MRI diagnostics (layer importance scoring)
-qwen_diag = diagnose(qwen_35a3b, text_benchmark)
-lance_diag = diagnose(lance_image_3b, vision_benchmark)
-trust_param = 0.7  # learned through evolution
-
-# Phase 3: Evolutionary population (100 models × 10 generations)
-population = create_population(genome, size=100)
-for gen in range(10):
-    top_parents = select(population, top_k=20)
-    children = crossover_and_mutate(top_parents, size=80)
-    population = top_parents + children
-# Result: Senter Omni 33A3B-Opus (training-free, evolutionary-selected)
-```
-
-See `references/darwin-family-implementation.md` for full code.
-
-### Thinker-Talker Architecture (Real-Time Audio)
-
-Qwen2.5-Omni's **Thinker-Talker** enables end-to-end real-time audio I/O.
-
-| Feature | Thinker-Talker | External TTS |
-|---------|---------------|--------------|
-| Real-time streaming | ✅ Chunked I/O | ❌ No (text-first) |
-| End-to-end | ✅ Single model | ❌ Pipeline |
-| Latency | 200ms to audio | 500-1000ms |
-| Context sharing | ✅ Talker sees all history | ❌ TTS only sees final text |
-| Prosody control | ✅ Emotional from context | ❌ Flat unless prompted |
-
-**Integration:**
-1. Extract Talker from Qwen2.5-Omni-7B (~500M params)
-2. Project base hidden states (4096) → Talker input (2048)
-3. Add TMRoPE to all attention layers
-4. Train 3 voice heads (Soprano, Alto, Bass) — each ~50M params
-5. Multi-voice routing at inference
-
-### MTP (Multi-Token Prediction) for Real-Time Inference
-
-Qwen 3.6 includes native **NextN draft heads** for speculative decoding: 2-3x speedup.
-
-```bash
-# llama.cpp
-./llama-server -m senter-omni-33A3B.gguf --mtp 3
-
-# vLLM
-vllm serve senter-omni-33A3B --speculative-model "mtp" --num-speculative-tokens 3
-
-# transformers
-output = model.generate(**inputs, use_mtp=True, num_mtp_tokens=3, mtp_acceptance_threshold=0.8)
-```
-
-**Why MTP Matters for Multimodal:**
-- Audio streaming: Talker needs fast text gen to feed speech decoder
-- Video understanding: 4K tokens (16 frames × 256 tokens/frame)
-- General responsiveness: 30 tok/s → 50-60 tok/s with MTP
-
-**Critical:** Preserve MTP draft heads during REAP/GRAFT — they're separate from FFN experts.
-
-### Expert Grafting Strategy
-
-**REAP (Remove Weak Experts):**
-- Shapley-MoE: Cooperative game theory (marginal contribution)
-- EEP: Gradient-free evolutionary strategy
-- Manual: Zero-out experts, measure performance drop
-- Target: REAP 4-5A of weak text-only experts from 35A3B base
-
-**GRAFT (Add Specialists):**
-```python
-for expert_idx in reaped_slots:
-    base_model.experts[expert_idx] = specialist_model.experts[random_idx]
-
-with torch.no_grad():
-    for layer in base_model.layers:
-        layer.router_weights.data += alignment_delta
-```
-
-**Handle Overlap (TIES-merging):**
-```python
-delta1 = lance_image_expert.weights - base_expert.weights
-delta2 = lance_video_expert.weights - base_expert.weights
-
-delta1 = drop_redundant(delta1, threshold=0.1)
-delta2 = drop_redundant(delta2, threshold=0.1)
-
-merged_delta = sign_elect(delta1, delta2)
-merged_expert.weights = base_expert.weights + merged_delta
-```
-
-### Build Phases (Typical Timeline)
-| Phase | Duration | Resources |
-|-------|----------|-----------|
-| Darwin Evolution | 1 week | 4×A100 80GB, 3.7TB, 10TB storage |
-| TMRoPE + Talker | 2 weeks | 8×A100 80GB, 640GB, 2TB |
-| Router Calibration | 1-2 days | 4×A100 80GB |
-| E2E Validation | 1-2 days | 4×A100 80GB |
-| **Total** | **~3 weeks** | **8×A100 80GB, ~$15-20K** |
-
-**Minimal:** 2×A100 80GB (reduce population to 20, 20 generations)
-
-### Pitfalls
-- Router dimension mismatch: Qwen 3.6 router on N experts; adding specialists expands topology → start with manual modality routing
-- Context overflow: Video eats context (4K tokens) → use RoPE scaling or chunked processing
-- MTP head corruption: REAP/GRAFT can zero-out draft heads → explicitly preserve
-- Talker latency: Without MTP, text gen becomes bottleneck → always enable `--mtp 3`
-- Expert collision: Lance Image + Lance Video share weights → always TIES-merge
-
-### Tools &amp; Libraries
-- **Darwin Family:** https://github.com/taebong-kim/darwin-family
-- **TIES-merging:** https://github.com/prateeky2806/ties-merging
-- **Mergekit:** https://github.com/arcee-ai/mergekit
-- **Qwen models:** Qwen 3.6 35A3B, Qwen2.5-Omni-7B, Lance 3B, AceStep 4B
-- **Inference:** vLLM (MTP), llama.cpp (MTP), FlashAttention-2
-
----
-
 ## High-Throughput Serving (vLLM)
 
 > **Note:** The `serving-llms-vllm` skill was not found in the current skill set. This section provides a comprehensive reference for vLLM serving based on best practices.
@@ -556,7 +383,7 @@ vllm serve model --guided-decoding-backend outlines
 | Multi-model API gateway | vLLM multi-model | Dynamic loading, shared KV cache |
 | Edge deployment (mobile/RPi) | llama.cpp GGUF | Quantized, no deps, ARM support |
 | Real-time audio I/O | Thinker-Talker + MTP | End-to-end streaming, 200ms latency |
-| Training-free model merge | Darwin Evolution | No GPU training, evolutionary search |
+| Training-free model merge | Mergekit + TIES | No GPU training, weight-based merging |
 
 ---
 
@@ -564,4 +391,4 @@ vllm serve model --guided-decoding-backend outlines
 
 - **`mlops-training-finetuning`** — LoRA/QLoRA, DPO, GRPO (Axolotl, Unsloth)
 - **`mlops-model-registry-tracking`** — Experiment tracking (W&amp;B), model hub (HF Hub)
-- **`mlops-model-quantization`** — GGUF/QAT for deployment (referenced by multimodal-composition)
+- **`mlops-model-quantization`** — GGUF/QAT for deployment

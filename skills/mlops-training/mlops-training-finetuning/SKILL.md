@@ -579,7 +579,7 @@ When fine-tuning audio/music generation models (e.g., AceStep 4B, HeartMuLa 3B),
 
 - **Hermes-Native Pipeline Preference**: Prioritize built-in skills over ad-hoc external tooling. Use `research-knowledge-retrieval` (YouTube transcript extraction) to auto-generate rich text captions from video metadata, replacing manual dataset labeling.
 - **Hardware Reality**: A 4B parameter audio model requires ~12-16GB VRAM minimum for LoRA with `bf16` + gradient checkpointing. A 2x RTX 3090 (24GB each) setup can comfortably handle this. If VRAM is tighter, use QLoRA (`load_in_4bit=True`).
-- **Custom Data Collator**: Unlike text LLMs, audio models require a custom `DataCollator` to convert WAV/MP3 file paths into mel-spectrograms or audio tokens before passing to the `Trainer`. Reference the `ai-music-generation` skill for model-specific architecture details.
+- **Custom Data Collator**: Unlike text LLMs, audio models require a custom `DataCollator` to convert WAV/MP3 file paths into mel-spectrograms or audio tokens before passing to the `Trainer`. Refer to the model's documentation for architecture-specific details.
 
 ## Decision Matrix
 
