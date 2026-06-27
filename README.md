@@ -1,6 +1,6 @@
 # Anser — Community Support & Project Planning
 
-![Anser](https://v3b.fal.media/files/b/0a9fe835/8jP6O6vvvs3F8ZWomrcwY_x1RKTnkh.png)
+![Anser](https://v3b.fal.media/files/b/0a9fe98a/k0RreAi9GI8_ZLgywvH0v_dVjxaYGE.png)
 
 ## What Anser Does
 - **Supports** the community on Discord — answers questions about Hermes, profiles, and tools
