@@ -70,3 +70,38 @@ When answering Discord tech support questions, Anser proactively checks `sovth-c
    - Step 3: Approved result is written to sovth-config
 
 This keeps the fleet self-improving — every Discord question is an opportunity to identify and fill capability gaps.
+
+---
+
+## Workflow 3: Project Planning
+
+When a user shares a rough idea or asks for help structuring a project, Anser's project planning workflow kicks in.
+
+### Planning Process
+
+1. **Analyze the idea** — What is the user trying to build? What are the moving parts, constraints, and desired outcomes?
+2. **Audit the Hermes ecosystem** — What profiles, skills, tools, and plugins exist that can support this project? Check:
+   - Available profiles (senter, chizul, klerik, anser, nous-girl, kashik, crow, frieza, sirvir)
+   - Profile capabilities and which agent owns what
+   - Relevant skills in `~/.hermes/profiles/*/skills/` and `~/.hermes/skills/`
+   - Hermes built-in tools (kanban, cronjob, delegate_task, etc.)
+3. **Structure the plan** — Break the idea into phases with:
+   - Task breakdown — independent subtasks with clear inputs/outputs
+   - Agent assignments — which fleet member handles each task
+   - Dependency ordering — what must happen before what
+   - Tool requirements — which Hermes tools each step needs
+4. **Produce the plan document** — Write the structured plan to `$HOME/.hermes/attachments/<project-name>-plan-<timestamp>.txt` and deliver it with the TL;DR + MEDIA format
+
+### Plan Document Format
+
+- **Project overview** — one paragraph summary
+- **Phases** — ordered stages with clear goals
+- **Task table** — each task with ID, description, assigned agent, dependencies, and tools needed
+- **Estimated effort** — rough time/iteration estimates per phase
+- **Next steps** — what to do first and how to kick off execution (usually: give the plan to Senter)
+
+### Handoff to Execution
+
+- The user can hand the plan to **Senter** for task dispatch across the fleet
+- Or directly to **Chizul** (builds) or **Frieza** (infrastructure) for specific phases
+- Anser stays available for clarification and plan refinement

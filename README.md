@@ -1,198 +1,81 @@
-![Anser Profile](profile.png)
+# Anser — Community Support & Project Planning
 
-# Anser — Discord Support Agent
+![Anser](https://v3b.fal.media/files/b/0a9fe835/8jP6O6vvvs3F8ZWomrcwY_x1RKTnkh.png)
 
-![Anser Banner](banner.png)
+## What Anser Does
+- **Supports** the community on Discord — answers questions about Hermes, profiles, and tools
+- **Plans** projects — takes rough ideas and structures them into actionable plans by analyzing available Hermes tools, agents, and capabilities
+- **Produces** plan documents that builder agents (Chizul, Frieza) can execute directly
+- **Routes** complex issues to the right specialist agent (defers to their expertise)
+- **Synthesizes** community feedback into actionable insights for the fleet
 
-**Anser** is your community-facing Discord support specialist. It answers questions, explains concepts, and maintains positive interactions across Discord channels. When someone needs help, Anser provides clear, approachable, and detailed responses.
+## Quick Start
 
-## 🎯 What Anser Does
-
-- **Answers Discord questions** - Technical and general queries with detailed explanations
-- **Provides examples** - Code snippets, command examples, step-by-step guides
-- **Links documentation** - Points to relevant Hermes docs, GitHub repos, tutorials
-- **Manages channels** - Maintains context across multiple Discord channels
-- **Engages community** - Uses reactions, threads, and friendly communication
-
-## 🚀 Quick Start
-
-### Installation
-
+### Install
 ```bash
 hermes profile install https://github.com/SouthpawIN/anser
-hermes -p anser
 ```
 
-### Update
-
-```bash
-hermes profile update https://github.com/SouthpawIN/anser
-```
-
-### Verify Installation
-
+### Verify
 ```bash
 hermes profile list
-hermes profile activate anser
-hermes tools list | grep discord
 ```
 
-## 📋 Usage Examples
-
-### Basic Support Question
-
-```
-User in #general: How do I set up turbofit?
-Anser provides: Full setup guide with commands, explanations, and troubleshooting tips
+### Run
+```bash
+hermes chat --profile anser
 ```
 
-### Technical Explanation
+## Example Prompts
 
-```
-User in #technical: What's the difference between serve main and serve aux?
-Anser explains: Main/aux model concepts, when to use each, example commands
-```
+### Community Support
+- *"What questions have come in on Discord today?"*
+- *"Someone asked about our API rate limits — can you answer that?"*
+- *"There's a bug report in Discord about the login page — escalate it"*
+- *"Check the community feedback channel — what's the sentiment like?"*
 
-### Multi-Channel Context
+### Project Planning
+- *"I want to build a multi-agent system that monitors CI pipelines — help me plan it"*
+- *"Structure this idea into a project plan: an agent that scans PRs for security issues"*
+- *"What Hermes tools would I need to build a daily standup bot for Discord?"*
+- *"Take this rough concept and turn it into a plan document that Chizul can implement"*
 
-```
-Anser tracks conversations across #general, #technical, #support channels
-Maintains context from previous messages in threads
-References earlier discussions when relevant
-```
+## Key Features
+- Real-time Discord monitoring — catches questions and feedback as they happen
+- Project planning engine — analyzes Hermes ecosystem (profiles, tools, skills) to structure ideas into executable plans with task breakdowns, agent assignments, and dependency ordering
+- Intelligent routing — knows when to defer to specialist agents vs. answer directly
+- Community context — understands the tone and needs of the developer community
+- Conversational tone — helpful and approachable, not robotic or dismissive
 
-### Emoji Engagement
+## Project Planning Workflow
 
-```
-Anser uses reactions to acknowledge messages
-✅ for completed help
-👍 for positive feedback
-🤔 for clarification needed
-```
+When a user shares a rough idea, Anser:
 
-## 🔧 Configuration
+1. **Analyzes** the idea — what's being asked for? What are the moving parts?
+2. **Audits available tools** — what Hermes profiles, skills, and plugins exist that can help?
+3. **Structures** the plan — breaks the idea into tasks, assigns owners, identifies dependencies
+4. **Produces** a plan document — written to a file and delivered as an attachment, ready for Senter to dispatch or Chizul to execute
 
-### Response Style
+This makes Anser the bridge between brainstorming (Nous Girl) and execution (Chizul, Frieza).
 
-- **Clear and approachable** - Accessible language, no jargon without explanation
-- **Detailed when needed** - Comprehensive answers with examples
-- **Markdown formatting** - Code blocks, lists, bold headers for readability
-- **Patient and helpful** - Answers follow-up questions thoroughly
+## Integration with Other Agents
+Anser is Discord's front desk and the fleet's project planner. For support: when asked about building, it defers to Chizul. When asked about reviews, Klerik. For docs, Kashik. For infrastructure, Frieza. For planning: Anser structures ideas, Senter dispatches tasks, Chizul builds, Klerik reviews.
 
-### Discord Integration
+## Configuration
+`~/.hermes/profiles/anser/config.yaml`
 
-Anser uses these Discord tools:
-- `discord_send` - Send messages to channels
-- `discord_read` - Read channel history
-- `discord_react` - Add emoji reactions
-- `discord_search` - Find relevant past discussions
+Key settings:
+- `discord_bot_token` — authentication for Discord bot access
+- `monitored_channels` — which channels to watch for engagement
+- `auto_respond` — automatically answer simple questions (default: true)
+- `response_style` — tone setting (friendly/professional/casual, default: friendly)
+- `escalation_keywords` — words that trigger routing to specialist agents
 
-### Environment Variables
+## Troubleshooting
 
-- `ANSER_CHANNELS` - Which channels to monitor (default: all)
-- `ANSER_TONE` - Response tone: `casual`, `professional`, `technical` (default: `helpful`)
-- `ANSER_THREAD_MODE` - Create threads for complex questions (default: true)
+**Not responding in Discord:** Check that Discord bot is online and has correct permissions in the server. Verify the bot token in config hasn't expired.
 
-## 🎬 Demo Video
+**Routing to wrong agent:** Anser uses keywords to decide routing. Be more specific in your question — "how do I deploy" → Frieza, "is this code correct" → Klerik.
 
-[View Demo Video](anser-promo.mp4)
-
-## 🔄 Workflow Example
-
-```
-User posts question → Anser reads full context → Determines channel/topic →
-Formulates answer → Includes examples/links → Posts response → Reacts with ✅ →
-Monitors for follow-ups
-```
-
-## 🛠️ Best Practices
-
-### When Anser Should Respond
-
-**Yes:**
-- Direct @mentions or questions
-- General support queries
-- Requests for documentation links
-- Clarification of technical concepts
-- Welcome messages for new users
-
-**No:**
-- Casual chat (unless asked)
-- Bot commands (those are for Discord bots)
-- Private conversations (unless flagged)
-
-### Response Structure
-
-**Good response:**
-```markdown
-## How to Install Turbofit
-
-Turbofit is the model serving backend. Here's how to set it up:
-
-### Step 1: Install the Skill
-\`\`\`bash
-hermes skills install turbofit
-\`\`\`
-
-### Step 2: Configure Your Model
-Edit `~/.config/turbofit/models.yaml` to add your model.
-
-### Step 3: Start Serving
-\`\`\`bash
-hermes skill turbofit serve main
-\`\`\`
-
-**Documentation:** [Turbofit README](https://github.com/SouthpawIN/turbofit)
-
-Let me know if you have questions! ✅
-```
-
-## 🐛 Troubleshooting
-
-**Issue**: Anser not responding to questions
-- Check Discord bot token is valid
-- Verify bot has message read/write permissions
-- Check Anser's channel filter configuration
-- Review Discord bot logs
-
-**Issue**: Responses too brief or unhelpful
-- Ensure Anser has access to web_search for documentation
-- Check that relevant skills are installed
-- Review response tone setting
-- Verify context window is sufficient
-
-**Issue**: Anser responding when it shouldn't
-- Adjust channel filter to exclude casual channels
-- Review trigger keyword configuration
-- Check if @mentions are required vs optional
-
-## 📊 Effectiveness Metrics
-
-- Average response time: <30 seconds
-- Answer accuracy: >90%
-- User satisfaction (via reactions): >85% positive
-- Follow-up questions needed: <20%
-
-## 🤝 Integration
-
-Anser works with:
-- **Senter** - Escalates complex issues for triage
-- **Chizul** - Refers implementation tasks
-- **Klerik** - Reports profile issues
-- **Kashi** - Requests deep research for complex questions
-- **Frieza** - Coordinates on channel management
-- Discord API - Full integration for messaging and reactions
-
-## 📝 Version History
-
-- **v1.0.0** - Initial Discord support
-- **v1.1.0** - Added multi-channel context
-- **v1.2.0** - Enhanced threading and reactions
-
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
-*Part of the SouthpawIN agent ecosystem*
+**Plan seems incomplete:** Provide more context about your goal. Anser plans better with constraints, target platforms, and desired outcomes specified.
+**Part of the multi-agent fleet by SouthpawIN**
